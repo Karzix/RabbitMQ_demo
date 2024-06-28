@@ -33,7 +33,7 @@ namespace RabbitMQ_demo.Controllers
         {
             var productData = productService.AddProduct(product);
             //send the inserted product data to the queue and consumer will listening this data from queue
-            _rabitMQProducer.SendProductMessage(productData);
+            //_rabitMQProducer.SendProductMessage(productData);
             return productData;
         }
         [HttpPut("updateproduct")]

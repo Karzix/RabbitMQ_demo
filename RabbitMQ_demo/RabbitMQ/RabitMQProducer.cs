@@ -7,7 +7,7 @@ namespace RabbitMQ_demo.RabbitMQ
 {
     public class RabitMQProducer: IRabitMQProducer
     {
-        public void SendProductMessage<T>(T message)
+        public void SendProductMessage<T>(T message, string key)
         {
             //Here we specify the Rabbit MQ Server. we use rabbitmq docker image and use it
             var factory = new ConnectionFactory
@@ -20,12 +20,12 @@ namespace RabbitMQ_demo.RabbitMQ
             using
             var channel = connection.CreateModel();
             //declare the queue after mentioning name and a few property related to that
-            channel.QueueDeclare("product", exclusive: false);
+            channel.QueueDeclare(key, exclusive: false);
             //Serialize the message
             var json = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(json);
             //put the data on to the product queue
-            channel.BasicPublish(exchange: "", routingKey: "product", body: body);
+            channel.BasicPublish(exchange: "", routingKey: key, body: body);
         }
     }
 }

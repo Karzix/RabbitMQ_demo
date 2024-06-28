@@ -1,14 +1,17 @@
 ﻿using RabbitMQ_demo.Data;
 using RabbitMQ_demo.Model;
+using RabbitMQ_demo.RabbitMQ;
 
 namespace RabbitMQ_demo.Service
 {
     public class ProductService : IProductService
     {
         private readonly ApplicationDBContext _dbContext;
-        public ProductService(ApplicationDBContext dbContext)
+        private readonly IRabitMQProducer _rabitMQProducer;
+        public ProductService(ApplicationDBContext dbContext, IRabitMQProducer rabitMQProducer)
         {
             _dbContext = dbContext;
+            _rabitMQProducer = rabitMQProducer;
         }
         public IEnumerable<Product> GetProductList()
         {
@@ -20,9 +23,10 @@ namespace RabbitMQ_demo.Service
         }
         public Product AddProduct(Product product)
         {
-            var result = _dbContext.Products.Add(product);
-            _dbContext.SaveChanges();
-            return result.Entity;
+            //var result = _dbContext.Products.Add(product);
+            //_dbContext.SaveChanges();
+            _rabitMQProducer.SendProductMessage(product, "product");
+            return product;
         }
         public Product UpdateProduct(Product product)
         {
